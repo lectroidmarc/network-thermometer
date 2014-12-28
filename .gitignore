@@ -1,0 +1,5 @@
+build/
+jsdoc/
+network_thermometer/
+node_modules/
+npm-debug.log
