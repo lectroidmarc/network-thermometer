@@ -16,4 +16,4 @@ I use a [Phant](https://github.com/sparkfun/phant) based data store to store the
 
 ##### The Graphs
 
-Speaking of graphs, the page at [http://lectroid.github.io/network-themometer](http://lectroid.github.io/network-themometer) uses [Highcharts](http://www.highcharts.com/) to display the data.  Of course you'll need your own Phant keys to access your own data.
+Speaking of graphs, the page at [https://lectroidmarc.github.io/network-thermometer](https://lectroidmarc.github.io/network-thermometer) uses [Highcharts](http://www.highcharts.com/) to display the data.  Of course you'll need your own Phant keys to access your own data.
