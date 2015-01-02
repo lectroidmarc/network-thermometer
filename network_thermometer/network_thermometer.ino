@@ -29,11 +29,11 @@ void setup() {
   Serial.begin(115200);
   Serial.println(F("\nNetwork Thermometer."));
 
-  if (Ethernet.begin(mac) == 0) {
+  while (!Ethernet.begin(mac)) {
     Serial.println(F("DHCP error!"));
-    while (true) {}
+    delay(30000);
   }
-  
+
   // give the Ethernet shield a second to initialize:
   delay(1000);
 
