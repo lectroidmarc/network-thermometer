@@ -95,31 +95,33 @@ void loop () {
 
 
 boolean updateWeb (int temperature, int humidity) {
-  if ( !client.connect(PHANT_HOST, PHANT_HOST_PORT) ) {
-    Serial.println(F("Error: Could not make a TCP connection"));
+  client.connect(PHANT_HOST, PHANT_HOST_PORT);
+
+  if (client.connected()) {
+    client.print(F("GET /input/")); client.print(PHANT_PUBLIC_KEY);
+    client.print(F("?private_key=")); client.print(PHANT_PRIVATE_KEY);
+    client.print(F("&temperature=")); client.print(temperature);
+    client.print(F("&humidity=")); client.print(humidity);
+    client.println(F(" HTTP/1.1"));
+    client.print("Host: "); client.println(PHANT_HOST);
+    client.println();
+
+    // Show the response
+    unsigned long lastRead = millis();
+    while (client.connected() && (millis() - lastRead < RESPONSE_TIMEOUT)) {
+      while (client.available()) {
+        char c = client.read();
+        Serial.print(c);
+        lastRead = millis();
+      }
+    }
+
+    client.stop();
+    Serial.println(F("Done."));
+    return true;
+  } else {
+    Serial.println(F("Error: Could not make client connection"));
     return false;
   }
-
-  client.print(F("GET /input/")); client.print(PHANT_PUBLIC_KEY);
-  client.print(F("?private_key=")); client.print(PHANT_PRIVATE_KEY);
-  client.print(F("&temperature=")); client.print(temperature);
-  client.print(F("&humidity=")); client.print(humidity);
-  client.println(F(" HTTP/1.1"));
-  client.print("Host: "); client.println(PHANT_HOST);
-  client.println();
-
-  // Show the response
-  unsigned long lastRead = millis();
-  while (client.connected() && (millis() - lastRead < RESPONSE_TIMEOUT)) {
-    while (client.available()) {
-      char c = client.read();
-      Serial.print(c);
-      lastRead = millis();
-    }
-  }
-
-  client.stop();
-  Serial.println(F("Done."));
-  return true;
 }
 
