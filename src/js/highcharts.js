@@ -108,10 +108,13 @@ var makeGraph = function (element, data) {
     },
     yAxis: [
       {
+        min: 32,
         title: {
           text: 'Temperature (°F)'
         }
-      },{
+      },
+      {
+        min: 0,
         title: {
           text: 'Humidity (%)'
         },
