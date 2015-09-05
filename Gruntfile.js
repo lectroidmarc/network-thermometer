@@ -50,9 +50,7 @@ module.exports = function(grunt) {
     jshint: {
       options: {
         curly: true,
-        eqeqeq: true,
-        newcap: true,
-        quotmark: 'single'
+        eqeqeq: true
       },
       beforeconcat: {
         src: ['Gruntfile.js', '<%= js_files %>']
