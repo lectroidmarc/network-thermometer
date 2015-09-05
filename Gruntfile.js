@@ -7,6 +7,14 @@ module.exports = function(grunt) {
         dest: 'build/main.concat.js'
       }
     },
+    connect: {
+      server: {
+        options: {
+          base: '.',
+          livereload: true
+        }
+      }
+    },
     uglify: {
       options: {
         sourceMap: true
@@ -56,11 +64,12 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('dist', ['hintify', 'uglify']);
   grunt.registerTask('hintify', ['jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
-  grunt.registerTask('default', ['watch']);
+  grunt.registerTask('default', ['connect', 'watch']);
 };
