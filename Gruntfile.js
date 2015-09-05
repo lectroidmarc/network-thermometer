@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
   grunt.initConfig({
+    css_files: ['src/css/*.css'],
     js_files: ['src/js/*.js'],
     concat: {
       dist: {
@@ -12,6 +13,27 @@ module.exports = function(grunt) {
         options: {
           base: '.',
           livereload: true
+        }
+      }
+    },
+    cssmin: {
+      options: {
+        sourceMap: true
+      },
+      styles: {
+        files: {
+          'css/main.min.css': ['<%= css_files %>']
+        }
+      }
+    },
+    htmlmin: {
+      options: {
+        removeComments: true,
+        collapseWhitespace: true
+      },
+      dist: {
+        files: {
+          'index.html': ['src/index.html']
         }
       }
     },
@@ -50,26 +72,36 @@ module.exports = function(grunt) {
       }
     },
     watch: {
+      css: {
+        files: ['<%= css_files %>'],
+        tasks: ['cssmin']
+      },
+      html: {
+        files: ['src/index.html'],
+        tasks: ['htmlmin']
+      },
       scripts: {
         files: ['<%= js_files %>'],
-        tasks: ['dist']
+        tasks: ['hintify', 'uglify']
       },
       other: {
         options: {
           livereload: true,
         },
-        files: ['index.html', 'css/main.css', 'js/*.min.js']
+        files: ['index.html', 'css/*.min.css', 'js/*.min.js']
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('dist', ['hintify', 'uglify']);
+  grunt.registerTask('dist', ['hintify', 'uglify', 'cssmin', 'htmlmin']);
   grunt.registerTask('hintify', ['jshint:beforeconcat', 'concat', 'jshint:afterconcat']);
   grunt.registerTask('default', ['connect', 'watch']);
 };
