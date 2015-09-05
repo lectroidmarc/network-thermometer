@@ -18,7 +18,7 @@ var init = function () {
 
     phant = new Phant(saved_phant_settings);
     phant.fetch({
-      'gte[timestamp]': 't - 1w'
+      'page': '1'
     }, onPhantFetch);
     phant.getStats(onPhantStats);
   } else {
