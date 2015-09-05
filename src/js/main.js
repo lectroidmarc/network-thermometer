@@ -20,7 +20,6 @@ var init = function () {
     phant.fetch({
       'page': '1'
     }, onPhantFetch);
-    phant.getStats(onPhantStats);
   } else {
     $('#tabs a:last').tab('show');
   }
@@ -66,6 +65,8 @@ var onPhantFetch = function (data) {
     //phant.enableRealtime(onPhantRealtime);
     phant.startPolling({}, onPhantPolled);
   }
+
+  phant.getStats(onPhantStats);
 };
 
 var onPhantRealtime = function (data) {
