@@ -52,6 +52,8 @@ var onSettingsSubmit = function (e) {
 var onPhantFetch = function (data) {
   //console.log(data);
 
+  phant.getStats(onPhantStats);
+
   if (data.message) {
     console.warn(data.message);
   } else {
@@ -65,8 +67,6 @@ var onPhantFetch = function (data) {
     //phant.enableRealtime(onPhantRealtime);
     phant.startPolling({}, onPhantPolled);
   }
-
-  phant.getStats(onPhantStats);
 };
 
 var onPhantRealtime = function (data) {
