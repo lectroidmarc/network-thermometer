@@ -100,15 +100,35 @@ var onPhantStats = function (data) {
   $('.stats').show();
 };
 
+var showStatusAlert = function (message, opts) {
+  if (typeof opts === 'undefined') { opts = {}; }
+
+  var alert = $('<div/>').addClass('status alert alert-' + (opts.alertClass || 'info')).appendTo('#alerts');
+  if (opts.glyphiconClass) {
+    $('<span/>').addClass('glyphicon glyphicon-' + opts.glyphiconClass).attr('aria-hidden', 'true').appendTo(alert);
+  }
+  $('<span/>').addClass('text').html(message).appendTo(alert);
+
+  return alert;
+};
+
+var clearAllStatusAlerts = function () {
+  $('#alerts .alert').slideUp(function () { this.remove(); });
+};
+
 var showStatus = function (current) {
   var last_update_timestamp = Date.parse(current.timestamp);
-  var out_of_date = (Date.now() - last_update_timestamp > 16 * 60 * 1000) ? true : false; // 15 minute heartbeat
+  var out_of_date = (Date.now() - last_update_timestamp > 15 * 60 * 1000) ? true : false; // 15 minute heartbeat
 
-  $('.status').hide();
+  clearAllStatusAlerts();
+
   if (out_of_date) {
     var last_update = new Date(last_update_timestamp);
-    $('#last_update_time').text(last_update.toLocaleString());
-    $('.status.outofdate').show();
+
+    showStatusAlert('System appears offline.  Last update at <strong id="last_update_time">' + last_update.toLocaleString() + '</strong>', {
+      alertClass: 'danger',
+      glyphiconClass: 'warning-sign'
+    });
   }
 };
 
