@@ -53,9 +53,10 @@ var onPhantFetch = function (data) {
   //console.log(data);
 
   phant.getStats(onPhantStats);
+  clearAllStatusAlerts();
 
   if (data.message) {
-    console.warn(data.message);
+    showStatusAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
   } else {
     var current = data[0];
 
@@ -76,8 +77,10 @@ var onPhantRealtime = function (data) {
 var onPhantPolled = function (data) {
   //console.log(data);
 
+  clearAllStatusAlerts();
+
   if (data.message) {
-    console.warn(data.message);
+    showStatusAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
   } else if (data.length > 0) {
     var current = data[0];
 
@@ -113,7 +116,7 @@ var showStatusAlert = function (message, opts) {
 };
 
 var clearAllStatusAlerts = function () {
-  $('#alerts .alert').slideUp(function () { this.remove(); });
+  $('#alerts .alert').remove();
 };
 
 var showStatus = function (current) {
