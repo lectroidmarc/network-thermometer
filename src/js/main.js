@@ -5,49 +5,45 @@
 var phant;
 
 var init = function () {
-  $('a[data-toggle="tab"]').on('shown.bs.tab', onTabChange);
-  $('#settings form').on('submit', onSettingsSubmit);
+  //$('a[data-toggle="tab"]').on('shown.bs.tab', onTabChange);
+  $('#settings form input').on('keyup', buildUrl);
 
-  var saved_phant_settings = JSON.parse(window.localStorage.getItem('phant_settings_temerature'));
+  var opts = { url: 'https://data.sparkfun.com' };
 
-  if (saved_phant_settings) {
-    $('#phant_url').val(saved_phant_settings.url);
-    $('#phant_public_key').val(saved_phant_settings.public_key);
-    $('#phant_private_key').val(saved_phant_settings.private_key);
-    $('#clear_btn').prop('disabled', !saved_phant_settings.private_key);
-
-    phant = new Phant(saved_phant_settings);
-    phant.fetch({
-      'page': '1'
-    }, onPhantFetch);
+  if (location.search !== '') {
+    var queryString = decodeURIComponent(location.search.substr(1));
+    var argSets = queryString.split('&');
+    for (var x = 0; x < argSets.length; x++) {
+      var pair = argSets[x].split('=');
+      if (pair.length === 2) {
+        opts[pair[0]] = pair[1];
+      }
+    }
   } else {
     $('#tabs a:last').tab('show');
   }
+
+  $('#phant_url').val(opts.url);
+  $('#phant_public_key').val(opts.public_key);
+  buildUrl();
+
+  phant = new Phant({
+    public_key: opts.public_key,
+    url: opts.url
+  });
+  phant.fetch({}, onPhantFetch);
 };
 
+/*
 var onTabChange = function (e) {
   switch ($(e.target).attr('href')) {
     case '#home':
-      init();
       break;
     case'#settings':
-      $('#update .result').hide();
       break;
   }
 };
-
-var onSettingsSubmit = function (e) {
-  e.preventDefault();
-
-  window.localStorage.setItem('phant_settings_temerature', JSON.stringify({
-    url: $('#phant_url').val(),
-    public_key: $('#phant_public_key').val(),
-    private_key: $('#phant_private_key').val()
-  }));
-
-  $('#clear_btn').prop('disabled', !$('#phant_private_key').val());
-  $('#tabs a:first').tab('show');
-};
+*/
 
 var onPhantFetch = function (data) {
   //console.log(data);
@@ -101,6 +97,20 @@ var onPhantStats = function (data) {
     width: percentage.toFixed(2) + '%'
   });
   $('.stats').show();
+};
+
+var buildUrl = function () {
+  var params = {
+    public_key: $('#phant_public_key').val()
+  };
+
+  if ($('#phant_url').val() !== 'https://data.sparkfun.com') {
+    params.url = $('#phant_url').val();
+  }
+
+  var url = window.location.origin + '/?' + $.param(params);
+
+  $('#site_url').attr('href', url).text(url);
 };
 
 var showStatusAlert = function (message, opts) {

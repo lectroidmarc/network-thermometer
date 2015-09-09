@@ -27,3 +27,11 @@
   display: none;
   margin-top: 20px;
 }
+
+.formbox {
+  margin-top: 10px;
+}
+
+.url_box {
+  margin: 15px 0 10px;
+}
