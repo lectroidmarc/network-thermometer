@@ -6,7 +6,7 @@ var phant;
 
 var init = function () {
   //$('a[data-toggle="tab"]').on('shown.bs.tab', onTabChange);
-  $('#settings form input').on('keyup', buildUrl);
+  $('#settings form input').on('keyup', onSettingsSubmit).on('change', onSettingsSubmit);
 
   var opts = { url: 'https://data.sparkfun.com' };
 
@@ -44,6 +44,11 @@ var onTabChange = function (e) {
   }
 };
 */
+
+var onSettingsSubmit = function (e) {
+  e.preventDefault();
+  buildUrl();
+};
 
 var onPhantFetch = function (data) {
   //console.log(data);
@@ -100,15 +105,15 @@ var onPhantStats = function (data) {
 };
 
 var buildUrl = function () {
-  var params = {
+  var params = new Parameters ({
     public_key: $('#phant_public_key').val()
-  };
+  });
 
   if ($('#phant_url').val() !== 'https://data.sparkfun.com') {
-    params.url = $('#phant_url').val();
+    params.set('url', $('#phant_url').val());
   }
 
-  var url = window.location.href + '?' + $.param(params);
+  var url = window.location.href + '?' + params.serialize();
 
   $('#site_url').attr('href', url).text(url);
 };
