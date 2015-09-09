@@ -7,7 +7,6 @@ var phant;
 var init = function () {
   //$('a[data-toggle="tab"]').on('shown.bs.tab', onTabChange);
   $('#settings form input').on('keyup', buildUrl);
-  $('#settings form input').on('paste', buildUrl);
 
   var opts = { url: 'https://data.sparkfun.com' };
 
