@@ -113,7 +113,7 @@ var buildUrl = function () {
     params.set('url', $('#phant_url').val());
   }
 
-  var url = window.location.href + '?' + params.serialize();
+  var url = window.location.href.replace(/\?.*/, '') + '?' + params.serialize();
 
   $('#site_url').attr('href', url).text(url);
 };
