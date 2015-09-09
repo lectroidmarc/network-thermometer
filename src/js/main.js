@@ -49,10 +49,10 @@ var onPhantFetch = function (data) {
   //console.log(data);
 
   phant.getStats(onPhantStats);
-  clearAllStatusAlerts();
+  clearAllAlerts();
 
   if (data.message) {
-    showStatusAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
+    showAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
   } else {
     var current = data[0];
 
@@ -73,10 +73,10 @@ var onPhantRealtime = function (data) {
 var onPhantPolled = function (data) {
   //console.log(data);
 
-  clearAllStatusAlerts();
+  clearAllAlerts();
 
   if (data.message) {
-    showStatusAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
+    showAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
   } else if (data.length > 0) {
     var current = data[0];
 
@@ -113,7 +113,7 @@ var buildUrl = function () {
   $('#site_url').attr('href', url).text(url);
 };
 
-var showStatusAlert = function (message, opts) {
+var showAlert = function (message, opts) {
   if (typeof opts === 'undefined') { opts = {}; }
 
   var alert = $('<div/>').addClass('status alert alert-' + (opts.alertClass || 'info')).appendTo('#alerts');
@@ -125,7 +125,7 @@ var showStatusAlert = function (message, opts) {
   return alert;
 };
 
-var clearAllStatusAlerts = function () {
+var clearAllAlerts = function () {
   $('#alerts .alert').remove();
 };
 
@@ -133,12 +133,12 @@ var showStatus = function (current) {
   var last_update_timestamp = Date.parse(current.timestamp);
   var out_of_date = (Date.now() - last_update_timestamp > 15 * 60 * 1000) ? true : false; // 15 minute heartbeat
 
-  clearAllStatusAlerts();
+  clearAllAlerts();
 
   if (out_of_date) {
     var last_update = new Date(last_update_timestamp);
 
-    showStatusAlert('System appears offline.  Last update at <strong id="last_update_time">' + last_update.toLocaleString() + '</strong>', {
+    showAlert('System appears offline.  Last update at <strong id="last_update_time">' + last_update.toLocaleString() + '</strong>', {
       alertClass: 'danger',
       glyphiconClass: 'warning-sign'
     });
