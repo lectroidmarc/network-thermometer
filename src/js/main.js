@@ -7,6 +7,7 @@ var phant;
 var init = function () {
   //$('a[data-toggle="tab"]').on('shown.bs.tab', onTabChange);
   $('#settings form input').on('keyup', buildUrl);
+  $('#settings form input').on('paste', buildUrl);
 
   var opts = { url: 'https://data.sparkfun.com' };
 
@@ -108,7 +109,7 @@ var buildUrl = function () {
     params.url = $('#phant_url').val();
   }
 
-  var url = window.location.origin + '/?' + $.param(params);
+  var url = window.location.href + '?' + $.param(params);
 
   $('#site_url').attr('href', url).text(url);
 };
