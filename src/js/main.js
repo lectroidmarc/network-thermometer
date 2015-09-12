@@ -27,11 +27,13 @@ var init = function () {
   $('#phant_public_key').val(opts.public_key);
   buildUrl();
 
+  showAlert('Loading...', {faClass: 'refresh', faSpin: true});
+
   phant = new Phant({
     public_key: opts.public_key,
     url: opts.url
   });
-  phant.fetch({}, onPhantFetch);
+  phant.fetch({}, onPhantFetch, onPhantError);
 };
 
 /*
@@ -69,6 +71,11 @@ var onPhantFetch = function (data) {
     //phant.enableRealtime(onPhantRealtime);
     phant.startPolling({}, onPhantPolled);
   }
+};
+
+var onPhantError = function (req) {
+  clearAllAlerts();
+  showAlert('An unknown error has occured.', {alertClass: 'danger', glyphiconClass: 'alert'});
 };
 
 var onPhantRealtime = function (data) {
@@ -122,8 +129,18 @@ var showAlert = function (message, opts) {
   if (typeof opts === 'undefined') { opts = {}; }
 
   var alert = $('<div/>').addClass('status alert alert-' + (opts.alertClass || 'info')).appendTo('#alerts');
-  if (opts.glyphiconClass) {
-    $('<span/>').addClass('glyphicon glyphicon-' + opts.glyphiconClass).attr('aria-hidden', 'true').appendTo(alert);
+  if (opts.glyphiconClass || opts.faClass) {
+    var icon = $('<span/>').attr('aria-hidden', 'true').appendTo(alert);
+
+    if (opts.glyphiconClass) {
+      icon.addClass('glyphicon glyphicon-' + opts.glyphiconClass);
+    }
+    if (opts.faClass) {
+      icon.addClass('fa fa-' + opts.faClass);
+    }
+    if (opts.faSpin) {
+      icon.addClass('fa-spin');
+    }
   }
   $('<span/>').addClass('text').html(message).appendTo(alert);
 
