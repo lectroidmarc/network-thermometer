@@ -3,10 +3,14 @@
  */
 
 var phant;
+var page;
 
 var init = function () {
   //$('a[data-toggle="tab"]').on('shown.bs.tab', onTabChange);
   $('#settings form input').on('keyup', onSettingsSubmit).on('change', onSettingsSubmit);
+
+  $('.previous').on('click', onPageBack);
+  $('.next').on('click', onPageForward);
 
   var opts = { url: 'https://data.sparkfun.com' };
 
@@ -33,7 +37,33 @@ var init = function () {
     public_key: opts.public_key,
     url: opts.url
   });
-  phant.fetch({}, onPhantFetch, onPhantError);
+  page = 1;
+  phant.fetch({
+    page: page
+  }, onPhantFetch, onPhantError);
+};
+
+var onPageBack = function (e) {
+  e.preventDefault();
+  $('.pager li').addClass('disabled');
+
+  page++;
+  phant.fetch({
+    page: page
+  }, onPhantPage, onPhantError);
+};
+
+var onPageForward = function (e) {
+  e.preventDefault();
+
+  if (page > 1) {
+    $('.pager li').addClass('disabled');
+
+    page--;
+    phant.fetch({
+      page: page
+    }, onPhantPage, onPhantError);
+  }
 };
 
 /*
@@ -61,15 +91,34 @@ var onPhantFetch = function (data) {
   if (data.message) {
     showAlert(data.message, {alertClass: 'warning', glyphiconClass: 'alert'});
   } else {
-    var current = data[0];
+    if (data.length > 0) {
+      $('.pager').show();
 
-    showStatus(current);
-    makeTempGauges(current);
+      var sortData = data.sort(sortTempData);
+      var current = sortData[0];
 
-    makeGraph('#plot', data);
+      showStatus(current);
+      makeTempGauges(current);
 
-    //phant.enableRealtime(onPhantRealtime);
-    phant.startPolling({}, onPhantPolled);
+      makeGraph('#plot', sortData);
+
+      //phant.enableRealtime(onPhantRealtime);
+      phant.startPolling({}, onPhantPolled);
+    }
+  }
+};
+
+var onPhantPage = function (data) {
+  $('.pager li > a').blur();
+  $('.pager li').removeClass('disabled');
+  $('.pager .next').toggleClass('disabled', page === 1);
+
+  if (data.message) {
+    showAlert(data.message, { alertClass: 'danger', faClass: 'warning' });
+  } else {
+    var sortData = data.sort(sortTempData);
+
+    makeGraph('#plot', sortData);
   }
 };
 
@@ -109,6 +158,15 @@ var onPhantStats = function (data) {
     width: percentage.toFixed(2) + '%'
   });
   $('.stats').show();
+};
+
+var sortTempData = function (a, b) {
+  var at = Date.parse(a.timestamp);
+  var bt = Date.parse(b.timestamp);
+
+  if (at > bt) { return -1; }
+  if (at < bt) { return 1; }
+  return 0;
 };
 
 var buildUrl = function () {
